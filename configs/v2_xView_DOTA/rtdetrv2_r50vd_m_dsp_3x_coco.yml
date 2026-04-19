@@ -1,0 +1,58 @@
+__include__: [
+  '../dataset/coco_detection_xView_DOTA.yml',
+  '../runtime.yml',
+  './include/dataloader.yml',
+  './include/optimizer.yml',
+  './include/rtdetrv2_r50vd.yml',
+]
+
+output_dir: ./output/test
+
+# pre-trained model
+tuning: /output/xView_DOTA_800_3c_source_only/last.pth
+
+HybridEncoder:
+  expansion: 0.5
+
+
+RTDETRTransformerv2:
+  eval_idx: 2 # use 3th decoder layer to eval
+  cross_attn_method: discrete
+
+
+epoches: 36
+
+optimizer:
+  type: AdamW
+  params: 
+    - 
+      params: '^(?=.*backbone)(?!.*norm).*$'
+      lr: 0.00001
+    - 
+      params: '^(?=.*(?:encoder|decoder))(?=.*(?:norm|bn)).*$'
+      weight_decay: 0.
+
+  lr: 0.0001
+  betas: [0.9, 0.999]
+  weight_decay: 0.0001
+
+
+train_dataloader: 
+  dataset: 
+    transforms:
+      policy:
+        epoch: 33
+  collate_fn:
+    stop_epoch: 33
+
+token:
+  freeze_epochs: 0
+
+rl_enable: true
+rl_state_dim: 16
+rl_hidden_dim: 64
+rl_lr: 0.0001
+rl_weight_decay: 0.0001
+rl_entropy_coef: 0.01
+rl_reward_momentum: 0.9
+rl_greedy_eval: false
