@@ -1,2 +1,2 @@
 # PoTTA
-A policy-guided test-time adaptation framework for object detection in remote sensing images
+The official implementation of our paper "PoTTA: Policy-Guided Test-Time Adaptation for Remote Sensing Object Detection".
